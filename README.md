@@ -3,6 +3,8 @@
 
 This is the first project in Treehouse Python tech degree.
 
+To use run league_builder.py
+
 ## Description
 
 You have volunteered to be the Coordinator for your town’s youth soccer league. 
