@@ -1,66 +1,118 @@
+# coding=utf-8
 import csv
+import os
 
-def get_data():
-    player_data = {
-        'name': [],
-        'height': [],
-        'exp': [],
-        'guardians': [],
-    }
+def csv_data():
+    players = []
 
-    with open('soccer_players.csv', newline='') as f:
-        csv_data = csv.DictReader(f)
+    with open('soccer_players.csv') as f:
+        data = csv.DictReader(f)
 
-        for row in csv_data:
-            teams['name'].append(row['Name'])
-            teams['height'].append(row['Height (inches)'])
-            teams['exp'].append(row['Soccer Experience'])
-            teams['guardians'].append(row['Guardian Name(s)'])
+        for row in data:
+            player_data = dict()
 
-    return player_data
+            player_data['name'] = row['Name']
+            player_data['height'] = row['Height (inches)']
+            player_data['exp'] = row['Soccer Experience']
+            player_data['guardians'] = row['Guardian Name(s)']
+
+            players.append(player_data)
+
+    return players
+
 
 def create_league():
     """divide 18 players into 3 leagues with same number of experienced players"""
 
-    players = get_data()
+    players = csv_data()
 
-    data_list = list(csv_data)
+    exp_players = []
+    non_exp_players = []
 
-    team_size = len(data_list)/len(teams)
+    for player in players:
+        if player['exp'] == 'YES':
+            exp_players.append(player)
+        else:
+            non_exp_players.append(player)
 
-    sharks = {}
-    dragons = {}
-    raptors = {}
+    # split up experienced players
+    exp_size = len(exp_players) / 3
+    sharks = exp_players[:exp_size]
+    raptors = exp_players[exp_size:(exp_size * 2)]
+    dragons = exp_players[(exp_size * 2):(exp_size * 3)]
+
+    # split up un-experienced players
+    non_exp_size = len(non_exp_players) / 3
+    sharks.extend(non_exp_players[:non_exp_size])
+    raptors.extend(non_exp_players[non_exp_size:(non_exp_size * 2)])
+    dragons.extend(non_exp_players[(non_exp_size * 2):(non_exp_size * 3)])
+
+    teams_dict = {
+        'sharks': sharks,
+        'raptors': raptors,
+        'dragons': dragons,
+    }
+
+    return teams_dict
+
+
+def teams_txt():
+    """Create the teams.txt file"""
+
+    data = create_league()
+    body_text = ''
+
+    # create text to add to file
+    for team, players in data.items():
+        body_text += team.title() + '\n'
+
+        for player in players:
+            body_text += player['name'] + ', '
+            body_text += player['exp'] + ', '
+            body_text += player['guardians']
+
+            body_text += '\n'
+
+        body_text += '\n'
+
+    # create the file
+    file_name = "teams.txt"
+
+    f = open(file_name, 'a')
+    f.write(body_text)
+    f.close()
 
 
 def welcome_letters():
     """to create welcome letters to players"""
 
-    players = get_data()
+    data = create_league()
 
-    for player in players:
+    # create folder to hold letters if it doesn't exist
+    folder = 'welcome_letters/'
 
-        # create the body of the text document
-        letter_text = "Dear, {}".format(players['guardians'])
-        letter_text += "Congratulations, {} will be playing on the {} this season!".format(players['name'], players['team_name'])
-        letter_text += "Please be there for the first practice on {}".format(players['guardians'])
-        letter_text += "\n\nLooking forward to a good season!\nCoach Jordan"
+    if not os.path.exists(folder):
+        os.makedirs(folder)
 
-        # create the file
-        file_name = "_".join(players['name'].split()) + ".txt"
 
-        file = open(file_name, ”w”)
-        file.write(letter_text)
-        file.close()
+    for team, players in data.items():
+        for player in players:
 
-    # EXTRA CREDIT:
+            # create the body of the text document
+            letter_text = "Dear {},".format(player['guardians']) + '\n\n'
+            letter_text += "Congratulations, {} will be playing on the {} this season! ".format(player['name'].split(" ")[0],
+                                                                                               team.title())
+            letter_text += "Please be there for the first practice this Sunday at 1:00pm."
+            letter_text += "\n\nLooking forward to a good season!\nCoach Jordan"
 
-    # Create 18 text files ("welcome" letters to the players' guardians).
-    # You'll create 1 text file for each player. Use the player’s name as the name of the file, in lowercase and with underscores and ending in .txt.
-    # For example, kenneth_love.txt.
-    # Make sure that each file begins with the text "Dear" followed by the guardian(s) name(s).
-    # Also include the additional required information: player's name, team name, and date & time of first practice.
+            # create the file
+            file_name = folder + "_".join(player['name'].lower().split(" ")) + ".txt"
+
+            f = open(file_name, 'w') # want each file to overwrite existing
+            f.write(letter_text)
+            f.close()
+
 
 if __name__ == "__main__":
-    create_league()
+    teams_txt()
     welcome_letters()
