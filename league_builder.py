@@ -26,26 +26,26 @@ def create_league():
 
     players = csv_data()
 
+    # split players by experience
     exp_players = []
-    non_exp_players = []
-
+    inexp_players = []
     for player in players:
         if player['exp'] == 'YES':
             exp_players.append(player)
         else:
-            non_exp_players.append(player)
+            inexp_players.append(player)
 
-    # split up experienced players
+    # add experienced players to teams evenly
     exp_size = len(exp_players) / 3
     sharks = exp_players[:exp_size]
     raptors = exp_players[exp_size:(exp_size * 2)]
     dragons = exp_players[(exp_size * 2):(exp_size * 3)]
 
-    # split up un-experienced players
-    non_exp_size = len(non_exp_players) / 3
-    sharks.extend(non_exp_players[:non_exp_size])
-    raptors.extend(non_exp_players[non_exp_size:(non_exp_size * 2)])
-    dragons.extend(non_exp_players[(non_exp_size * 2):(non_exp_size * 3)])
+    # add inexperienced players to teams evenly
+    inexp_size = len(inexp_players) / 3
+    sharks.extend(inexp_players[:inexp_size])
+    raptors.extend(inexp_players[inexp_size:(inexp_size * 2)])
+    dragons.extend(inexp_players[(inexp_size * 2):(inexp_size * 3)])
 
     teams_dict = {
         'sharks': sharks,
@@ -78,7 +78,7 @@ def teams_txt():
     # create the file
     file_name = "teams.txt"
 
-    f = open(file_name, 'a')
+    f = open(file_name, 'w')
     f.write(body_text)
     f.close()
 
