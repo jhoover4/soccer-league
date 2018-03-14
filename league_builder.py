@@ -65,7 +65,8 @@ def teams_txt():
 
     # create text to add to file
     for team, players in data.items():
-        body_text += team.title() + ("=" * len(team.title())) + '\n'
+        body_text += team.title() + "\n" + \
+                     ("=" * len(team.title())) + '\n'
 
         for player in players:
             body_text += player['name'] + ', '
@@ -74,7 +75,7 @@ def teams_txt():
 
             body_text += '\n'
 
-        body_text += '\n'
+        body_text += '\n\n'
 
     # create the file
     file_name = "teams.txt"
