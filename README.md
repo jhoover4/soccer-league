@@ -1,5 +1,4 @@
 # Soccer League
-***Trying out the Treehouse Tech Degree!***
 
 This is the first project in Treehouse Python tech degree.
 

@@ -2,6 +2,7 @@
 import csv
 import os
 
+
 def csv_data():
     players = []
 
@@ -22,7 +23,7 @@ def csv_data():
 
 
 def create_league():
-    """divide 18 players into 3 leagues with same number of experienced players"""
+    """Divides 18 players into 3 leagues with same number of experienced players"""
 
     players = csv_data()
 
@@ -57,14 +58,14 @@ def create_league():
 
 
 def teams_txt():
-    """Create the teams.txt file"""
+    """Creates the teams.txt file"""
 
     data = create_league()
     body_text = ''
 
     # create text to add to file
     for team, players in data.items():
-        body_text += team.title() + '\n'
+        body_text += team.title() + ("=" * len(team.title())) + '\n'
 
         for player in players:
             body_text += player['name'] + ', '
@@ -84,7 +85,7 @@ def teams_txt():
 
 
 def welcome_letters():
-    """to create welcome letters to players"""
+    """Creates welcome letters to players"""
 
     data = create_league()
 
@@ -94,21 +95,20 @@ def welcome_letters():
     if not os.path.exists(folder):
         os.makedirs(folder)
 
-
     for team, players in data.items():
         for player in players:
-
             # create the body of the text document
             letter_text = "Dear {},".format(player['guardians']) + '\n\n'
-            letter_text += "Congratulations, {} will be playing on the {} this season! ".format(player['name'].split(" ")[0],
-                                                                                               team.title())
+            letter_text += "Congratulations, {} will be playing on the {} this season! ".format(
+                player['name'].split(" ")[0],
+                team.title())
             letter_text += "Please be there for the first practice this Sunday at 1:00pm."
             letter_text += "\n\nLooking forward to a good season!\nCoach Jordan"
 
             # create the file
             file_name = folder + "_".join(player['name'].lower().split(" ")) + ".txt"
 
-            f = open(file_name, 'w') # want each file to overwrite existing
+            f = open(file_name, 'w')  # want each file to overwrite existing
             f.write(letter_text)
             f.close()
 
