@@ -4,6 +4,8 @@ import os
 
 
 def csv_data():
+    """Reads data from csv into list of dicts
+    """
     players = []
 
     with open('soccer_players.csv') as f:
